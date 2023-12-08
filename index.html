@@ -9,18 +9,95 @@
         theme: {
           extend: {
             colors: {
-              "main": "#8d8d8d;",
-              "drum": "#b3b3b3",
-              "192": "600px"
+              main: "#8d8d8d;",
+              drum: "#b3b3b3",
+              button: "gray",
+            },
+            boxShadow: {
+              "3xl": "3px 3px 5px rgba(0, 0, 0, 1)",
             },
           },
         },
       };
     </script>
+    <script src="https://unpkg.com/alpinejs" defer></script>
   </head>
-  <body class="bg-main h-screen	flex justify-center items-center">
-    <div class="main-container w-4/12 h-80 bg-drum border-4 border-orange-400">
-        
+  <body class="bg-main h-screen flex justify-center items-center">
+    <div
+      class="main-container w-4/12 h-80 bg-drum border-4 border-orange-400 flex"
+    >
+
+      <!-- Left container -->
+      <div class="left-container mt-2 w-full">
+        <div class="btn-container grid grid-rows-4 grid-cols-3 gap-4 m-5">
+          <button class="bg-button p-5 shadow-3xl rounded font-extrabold">
+            Q
+          </button>
+          <button class="bg-button p-5 shadow-3xl rounded font-extrabold">
+            W
+          </button>
+          <button class="bg-button p-5 shadow-3xl rounded font-extrabold">
+            E
+          </button>
+          <button class="bg-button p-5 shadow-3xl rounded font-extrabold">
+            A
+          </button>
+          <button class="bg-button p-5 shadow-3xl rounded font-extrabold">
+            S
+          </button>
+          <button class="bg-button p-5 shadow-3xl rounded font-extrabold">
+            D
+          </button>
+          <button class="bg-button p-5 shadow-3xl rounded font-extrabold">
+            Z
+          </button>
+          <button class="bg-button p-5 shadow-3xl rounded font-extrabold">
+            X
+          </button>
+          <button class="bg-button p-5 shadow-3xl rounded font-extrabold">
+            C
+          </button>
+        </div>
+      </div>
+
+      <!-- Right container -->
+      <div
+        class="right-container w-full m-5 flex items-center justify-evenly	 flex-col"
+      >
+        <!-- Power container -->
+        <div class="power-container">
+          <span class="font-extrabold">Power</span>
+          <div
+            class="power-btn-container w-12 h-5 bg-black relative cursor-pointer"
+          >
+            <div
+              class="switch-container w-5 h-5 bg-blue-400 absolute left-0 top-0"
+            ></div>
+          </div>
+        </div>
+
+        <!-- Display message container -->
+        <div class="display-msg-container">
+          <p class="w-52 h-10 bg-button"></p>
+        </div>
+
+        <!-- Guess message container -->
+        <div class="guess-msg-container">
+          <p class="w-52 h-10 bg-button"></p>
+        </div>
+
+        <!-- Play sound container -->
+        <div class="play-sound-container">
+          <span class="font-extrabold">Play</span>
+          <div
+            class="play-btn-container w-12 h-5 bg-black relative cursor-pointer"
+          >
+            <div
+              class="play-switch-container w-5 h-5 bg-blue-400 absolute left-0 top-0"
+            ></div>
+          </div>
+        </div>
+      </div>
     </div>
   </body>
 </html>
