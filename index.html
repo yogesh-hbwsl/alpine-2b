@@ -76,7 +76,8 @@
           toggle(name) {
             this.keys.map((item)=>{
               if(item.name === name){
-                new Audio(item.url).play();
+                
+                Alpine.store('powerbtn').on && new Audio(item.url).play();
 
                 item.state = true
                 setTimeout(() => {
