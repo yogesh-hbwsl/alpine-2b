@@ -21,79 +21,152 @@
       };
     </script>
     <script src="https://unpkg.com/alpinejs" defer></script>
+    <script>
+      document.addEventListener("alpine:init", () => {
+        Alpine.store("soundbtn", {
+          on: false,
+          keys: [
+            {
+              name: "Q",
+              state: false,
+              url: 'https://s3.amazonaws.com/freecodecamp/drums/Heater-1.mp3'
+            },
+            {
+              name: "W",
+              state: false,
+              url: 'https://s3.amazonaws.com/freecodecamp/drums/Heater-2.mp3'
+            },
+            {
+              name: "E",
+              state: false,
+              url: 'https://s3.amazonaws.com/freecodecamp/drums/Heater-3.mp3'
+            },
+            {
+              name: "A",
+              state: false,
+              url: 'https://s3.amazonaws.com/freecodecamp/drums/Heater-4_1.mp3'
+            },
+            {
+              name: "S",
+              state: false,
+              url: 'https://s3.amazonaws.com/freecodecamp/drums/Heater-6.mp3'
+            },
+            {
+              name: "D",
+              state: false,
+              url: 'https://s3.amazonaws.com/freecodecamp/drums/Dsc_Oh.mp3'
+            },
+            {
+              name: "Z",
+              state: false,
+              url: 'https://s3.amazonaws.com/freecodecamp/drums/Kick_n_Hat.mp3'
+            },
+            {
+              name: "X",
+              state: false,
+              url: 'https://s3.amazonaws.com/freecodecamp/drums/RP4_KICK_1.mp3'
+            },
+            {
+              name: "C",
+              state: false,
+              url: 'https://s3.amazonaws.com/freecodecamp/drums/Cev_H2.mp3'
+            }
+          ],
+
+          toggle(name) {
+            this.keys.map((item)=>{
+              if(item.name === name){
+                new Audio(item.url).play();
+
+                item.state = true
+                setTimeout(() => {
+                  item.state = false
+                }, 100);
+              }else{
+                item.state = false
+              }
+            })
+          },
+        });
+
+        Alpine.store("powerbtn", {
+          on: false,
+          toggle(){
+            this.on = !this.on;
+          }
+        });
+
+        Alpine.store("playbtn", {
+          on: false,
+          toggle(){
+            this.on = !this.on;
+          }
+        });
+      });
+    </script>
   </head>
   <body class="bg-main h-screen flex justify-center items-center">
     <div
       class="main-container w-4/12 h-80 bg-drum border-4 border-orange-400 flex"
     >
-
       <!-- Left container -->
       <div class="left-container mt-2 w-full">
-        <div class="btn-container grid grid-rows-4 grid-cols-3 gap-4 m-5">
-          <button class="bg-button p-5 shadow-3xl rounded font-extrabold">
-            Q
+        <div
+          x-data
+          class="btn-container grid grid-rows-4 grid-cols-3 gap-4 m-5"
+        >
+          <template x-for="key in $store.soundbtn.keys">
+            <button
+              class="sound-btn bg-button p-5 shadow-3xl rounded font-extrabold"
+              x-text="key.name"
+              @click="$store.soundbtn.toggle($el.innerHTML)"
+              :class="key.state && 'bg-orange-400'"
+            >
           </button>
-          <button class="bg-button p-5 shadow-3xl rounded font-extrabold">
-            W
-          </button>
-          <button class="bg-button p-5 shadow-3xl rounded font-extrabold">
-            E
-          </button>
-          <button class="bg-button p-5 shadow-3xl rounded font-extrabold">
-            A
-          </button>
-          <button class="bg-button p-5 shadow-3xl rounded font-extrabold">
-            S
-          </button>
-          <button class="bg-button p-5 shadow-3xl rounded font-extrabold">
-            D
-          </button>
-          <button class="bg-button p-5 shadow-3xl rounded font-extrabold">
-            Z
-          </button>
-          <button class="bg-button p-5 shadow-3xl rounded font-extrabold">
-            X
-          </button>
-          <button class="bg-button p-5 shadow-3xl rounded font-extrabold">
-            C
-          </button>
+          </template>
         </div>
       </div>
 
       <!-- Right container -->
       <div
-        class="right-container w-full m-5 flex items-center justify-evenly	 flex-col"
+        class="right-container w-full m-5 flex items-center justify-evenly flex-col"
       >
         <!-- Power container -->
         <div class="power-container">
           <span class="font-extrabold">Power</span>
           <div
+            x-data
             class="power-btn-container w-12 h-5 bg-black relative cursor-pointer"
+            @click="$store.powerbtn.toggle()"
           >
             <div
-              class="switch-container w-5 h-5 bg-blue-400 absolute left-0 top-0"
+              class="switch-container w-5 h-5 bg-blue-400 absolute top-0"
+              :class="$store.powerbtn.on ? 'right-0' : 'left-0'"
             ></div>
           </div>
         </div>
 
         <!-- Display message container -->
         <div class="display-msg-container">
-          <p class="w-52 h-10 bg-button"></p>
+          <p class="w-52 h-10 bg-button flex justify-center items-center font-extrabold"></p>
         </div>
 
         <!-- Guess message container -->
         <div class="guess-msg-container">
-          <p class="w-52 h-10 bg-button"></p>
+          <p class="w-52 h-10 bg-button flex justify-center items-center font-extrabold"></p>
         </div>
 
         <!-- Play sound container -->
         <div class="play-sound-container">
           <span class="font-extrabold">Play</span>
           <div
+            x-data
             class="play-btn-container w-12 h-5 bg-black relative cursor-pointer"
+            @click="$store.playbtn.toggle()"
           >
             <div
-              class="play-switch-container w-5 h-5 bg-blue-400 absolute left-0 top-0"
+              class="play-switch-container w-5 h-5 bg-blue-400 absolute top-0"
+              :class="$store.playbtn.on ? 'right-0' : 'left-0'"
             ></div>
           </div>
         </div>
