@@ -101,6 +101,12 @@
           on: false,
           toggle(){
             this.on = !this.on;
+            let randomnumber=Math.floor((Math.random() * 9));
+            let url = Alpine.store('soundbtn').keys[randomnumber].url;
+            new Audio(url).play();
+            setTimeout(() => {
+              this.on = !this.on;
+            }, 500);
           }
         });
       });
