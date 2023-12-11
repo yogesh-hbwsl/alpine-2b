@@ -24,7 +24,12 @@
     <script>
       document.addEventListener("alpine:init", () => {
         Alpine.store("global", {
-          soundName: ''
+          soundName: "",
+          soundNameToGuess: "",
+          isGameStarted: false,
+          isGuessCorrect: false,
+          isGameFinished: false,
+          message: "",
         });
 
         Alpine.store("soundbtn", {
@@ -34,100 +39,143 @@
               name: "Q",
               soundName: "Heater 1",
               state: false,
-              url: 'https://s3.amazonaws.com/freecodecamp/drums/Heater-1.mp3'
+              url: "https://s3.amazonaws.com/freecodecamp/drums/Heater-1.mp3",
             },
             {
               name: "W",
               soundName: "Heater 2",
               state: false,
-              url: 'https://s3.amazonaws.com/freecodecamp/drums/Heater-2.mp3'
+              url: "https://s3.amazonaws.com/freecodecamp/drums/Heater-2.mp3",
             },
             {
               name: "E",
               soundName: "Heater 3",
               state: false,
-              url: 'https://s3.amazonaws.com/freecodecamp/drums/Heater-3.mp3'
+              url: "https://s3.amazonaws.com/freecodecamp/drums/Heater-3.mp3",
             },
             {
               name: "A",
               soundName: "Heater 4",
               state: false,
-              url: 'https://s3.amazonaws.com/freecodecamp/drums/Heater-4_1.mp3'
+              url: "https://s3.amazonaws.com/freecodecamp/drums/Heater-4_1.mp3",
             },
             {
               name: "S",
               soundName: "Clap",
               state: false,
-              url: 'https://s3.amazonaws.com/freecodecamp/drums/Heater-6.mp3'
+              url: "https://s3.amazonaws.com/freecodecamp/drums/Heater-6.mp3",
             },
             {
               name: "D",
               soundName: "Open HH",
               state: false,
-              url: 'https://s3.amazonaws.com/freecodecamp/drums/Dsc_Oh.mp3'
+              url: "https://s3.amazonaws.com/freecodecamp/drums/Dsc_Oh.mp3",
             },
             {
               name: "Z",
               soundName: "Kick n' Hat",
               state: false,
-              url: 'https://s3.amazonaws.com/freecodecamp/drums/Kick_n_Hat.mp3'
+              url: "https://s3.amazonaws.com/freecodecamp/drums/Kick_n_Hat.mp3",
             },
             {
               name: "X",
               soundName: "Kick",
               state: false,
-              url: 'https://s3.amazonaws.com/freecodecamp/drums/RP4_KICK_1.mp3'
+              url: "https://s3.amazonaws.com/freecodecamp/drums/RP4_KICK_1.mp3",
             },
             {
               name: "C",
               soundName: "Closed HH",
               state: false,
-              url: 'https://s3.amazonaws.com/freecodecamp/drums/Cev_H2.mp3'
-            }
+              url: "https://s3.amazonaws.com/freecodecamp/drums/Cev_H2.mp3",
+            },
           ],
 
           toggle(name) {
-            this.keys.map((item)=>{
-              if(item.name === name){
-                if(Alpine.store('powerbtn').on){
-                  new Audio(item.url).play();
-                  Alpine.store('global').soundName = item.soundName;
-                }
+            if (!Alpine.store("global").isGameStarted) {
+              this.keys.map((item) => {
+                if (item.name === name) {
+                  if (Alpine.store("powerbtn").on) {
+                    new Audio(item.url).play();
+                    Alpine.store("global").soundName = item.soundName;
+                  }
 
-                item.state = true
-                setTimeout(() => {
-                  item.state = false
-                }, 100);
-              }else{
-                item.state = false
-              }
-            })
+                  item.state = true;
+                  setTimeout(() => {
+                    item.state = false;
+                  }, 100);
+                } else {
+                  item.state = false;
+                }
+              });
+            } else {
+              this.keys.map((item) => {
+                if (item.name === name) {
+                  new Audio(item.url).play();
+
+                  const isGuessCorrect =
+                    item.soundName === Alpine.store("global").soundNameToGuess;
+                  Alpine.store("global").isGameFinished = true;
+                  if (isGuessCorrect) {
+                    Alpine.store("global").isGuessCorrect = true;
+                    Alpine.store("global").message = "Guess is correct!";
+                  } else {
+                    Alpine.store("global").isGuessCorrect = false;
+                    Alpine.store("global").message = "Guess is incorrect!";
+                  }
+
+                  item.state = true;
+                  setTimeout(() => {
+                    item.state = false;
+                  }, 100);
+                }
+              });
+            }
           },
         });
 
         Alpine.store("powerbtn", {
           on: false,
-          toggle(){
+          toggle() {
             this.on = !this.on;
-          }
+          },
         });
 
         Alpine.store("playbtn", {
           on: false,
-          toggle(){
+          toggle() {
+            if (Alpine.store("powerbtn").on) {
+              Alpine.store("global").isGameStarted = true;
+
+              this.on = !this.on;
+              let randomnumber = Math.floor(Math.random() * 9);
+              let url = Alpine.store("soundbtn").keys[randomnumber].url;
+              new Audio(url).play();
+              setTimeout(() => {
+                this.on = !this.on;
+              }, 500);
+              Alpine.store("global").soundNameToGuess =
+                Alpine.store("soundbtn").keys[randomnumber].soundName;
+            } else {
+              alert("Press the power button to start the game!");
+            }
+          },
+        });
+
+        Alpine.store("restartbtn", {
+          on: false,
+          toggle() {
             this.on = !this.on;
-            let randomnumber=Math.floor((Math.random() * 9));
-            let url = Alpine.store('soundbtn').keys[randomnumber].url;
-            new Audio(url).play();
             setTimeout(() => {
               this.on = !this.on;
-            }, 500);
-          }
+            }, 100);
+            location.reload()
+          },
         });
       });
     </script>
   </head>
-  <body class="bg-main h-screen flex justify-center items-center">
+  <body class="bg-main h-screen flex justify-center items-center flex-col">
     <div
       class="main-container w-4/12 h-80 bg-drum border-4 border-orange-400 flex"
     >
@@ -143,8 +191,7 @@
               x-text="key.name"
               @click="$store.soundbtn.toggle($el.innerHTML)"
               :class="key.state && 'bg-orange-400'"
-            >
-          </button>
+            ></button>
           </template>
         </div>
       </div>
@@ -170,12 +217,23 @@
 
         <!-- Display message container -->
         <div x-data class="display-msg-container">
-          <p class="w-52 h-10 bg-button flex justify-center items-center font-extrabold" x-text="$store.global.soundName"></p>
+          <p
+            class="w-52 h-10 bg-button flex justify-center items-center font-extrabold"
+            x-text="$store.global.isGameFinished ? $store.global.soundNameToGuess : $store.global.soundName"
+          ></p>
         </div>
 
         <!-- Guess message container -->
-        <div class="guess-msg-container">
-          <p class="w-52 h-10 bg-button flex justify-center items-center font-extrabold"></p>
+        <div x-data class="guess-msg-container">
+          <p
+            class="w-52 h-10 flex justify-center items-center font-extrabold"
+            :class="$store.global.isGameFinished ? ($store.global.isGuessCorrect ? 'bg-green-600' : 'bg-red-600') : 'bg-button'"
+          >
+            <span
+              x-show="$store.global.isGameFinished"
+              x-text="$store.global.message"
+            ></span>
+          </p>
         </div>
 
         <!-- Play sound container -->
@@ -193,6 +251,15 @@
           </div>
         </div>
       </div>
+    </div>
+    <div x-data class="restart-game-btn-container mt-5">
+      <button
+        class="restart-btn bg-button p-5 shadow-3xl rounded font-extrabold"
+        @click="$store.restartbtn.toggle()"
+        :class="$store.restartbtn.on && 'bg-orange-400'"
+      >
+        Restart
+      </button>
     </div>
   </body>
 </html>
