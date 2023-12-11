@@ -23,51 +23,64 @@
     <script src="https://unpkg.com/alpinejs" defer></script>
     <script>
       document.addEventListener("alpine:init", () => {
+        Alpine.store("global", {
+          soundName: ''
+        });
+
         Alpine.store("soundbtn", {
           on: false,
           keys: [
             {
               name: "Q",
+              soundName: "Heater 1",
               state: false,
               url: 'https://s3.amazonaws.com/freecodecamp/drums/Heater-1.mp3'
             },
             {
               name: "W",
+              soundName: "Heater 2",
               state: false,
               url: 'https://s3.amazonaws.com/freecodecamp/drums/Heater-2.mp3'
             },
             {
               name: "E",
+              soundName: "Heater 3",
               state: false,
               url: 'https://s3.amazonaws.com/freecodecamp/drums/Heater-3.mp3'
             },
             {
               name: "A",
+              soundName: "Heater 4",
               state: false,
               url: 'https://s3.amazonaws.com/freecodecamp/drums/Heater-4_1.mp3'
             },
             {
               name: "S",
+              soundName: "Clap",
               state: false,
               url: 'https://s3.amazonaws.com/freecodecamp/drums/Heater-6.mp3'
             },
             {
               name: "D",
+              soundName: "Open HH",
               state: false,
               url: 'https://s3.amazonaws.com/freecodecamp/drums/Dsc_Oh.mp3'
             },
             {
               name: "Z",
+              soundName: "Kick n' Hat",
               state: false,
               url: 'https://s3.amazonaws.com/freecodecamp/drums/Kick_n_Hat.mp3'
             },
             {
               name: "X",
+              soundName: "Kick",
               state: false,
               url: 'https://s3.amazonaws.com/freecodecamp/drums/RP4_KICK_1.mp3'
             },
             {
               name: "C",
+              soundName: "Closed HH",
               state: false,
               url: 'https://s3.amazonaws.com/freecodecamp/drums/Cev_H2.mp3'
             }
@@ -76,8 +89,10 @@
           toggle(name) {
             this.keys.map((item)=>{
               if(item.name === name){
-                
-                Alpine.store('powerbtn').on && new Audio(item.url).play();
+                if(Alpine.store('powerbtn').on){
+                  new Audio(item.url).play();
+                  Alpine.store('global').soundName = item.soundName;
+                }
 
                 item.state = true
                 setTimeout(() => {
@@ -154,8 +169,8 @@
         </div>
 
         <!-- Display message container -->
-        <div class="display-msg-container">
-          <p class="w-52 h-10 bg-button flex justify-center items-center font-extrabold"></p>
+        <div x-data class="display-msg-container">
+          <p class="w-52 h-10 bg-button flex justify-center items-center font-extrabold" x-text="$store.global.soundName"></p>
         </div>
 
         <!-- Guess message container -->
