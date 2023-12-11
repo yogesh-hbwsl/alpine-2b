@@ -162,6 +162,33 @@
           },
         });
 
+        Alpine.store("randomplaybtn", {
+          on: false,
+          toggle() {
+            this.on = !this.on;
+            let audioArr = [...Alpine.store("soundbtn").keys].map((item) => {
+              return new Audio(item.url);
+            });
+
+            let randArr = audioArr.sort((a, b) => {
+              return 0.5 - Math.random();
+            });
+
+            let index = 0;
+            playAudio(randArr[index]);
+            function playAudio(audio) {
+              audio.addEventListener("ended", () => {
+                index++;
+                playAudio(randArr[index]);
+              });
+              audio.play();
+              if(index===randArr.length-1){
+                Alpine.store('randomplaybtn').on = !Alpine.store('randomplaybtn').on
+              }
+            }
+          },
+        });
+
         Alpine.store("restartbtn", {
           on: false,
           toggle() {
@@ -169,7 +196,7 @@
             setTimeout(() => {
               this.on = !this.on;
             }, 100);
-            location.reload()
+            location.reload();
           },
         });
       });
@@ -247,6 +274,24 @@
             <div
               class="play-switch-container w-5 h-5 bg-blue-400 absolute top-0"
               :class="$store.playbtn.on ? 'right-0' : 'left-0'"
+            ></div>
+          </div>
+        </div>
+
+        <!-- Random sound play container -->
+        <div
+          x-data
+          x-show="$store.global.isGameFinished && $store.global.isGuessCorrect"
+          class="random-play-sound-container flex flex-col items-center"
+        >
+          <span class="font-extrabold">Random Play</span>
+          <div
+            class="random-play-btn-container w-12 h-5 bg-black relative cursor-pointer"
+            @click="$store.randomplaybtn.toggle()"
+          >
+            <div
+              class="random-play-switch-container w-5 h-5 bg-blue-400 absolute top-0"
+              :class="$store.randomplaybtn.on ? 'right-0' : 'left-0'"
             ></div>
           </div>
         </div>
